@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demis Martin | Portfólio</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --matrix-green: #00ff41;
+    --matrix-dark: #003b00;
+    --matrix-dim: #0d4f0d;
+    --matrix-bright: #39ff14;
+    --matrix-bg: #0a0a0a;
+    --matrix-card: rgba(0, 255, 65, 0.04);
+    --matrix-border: rgba(0, 255, 65, 0.15);
+    --matrix-glow: 0 0 10px rgba(0, 255, 65, 0.3), 0 0 40px rgba(0, 255, 65, 0.1);
+    --text-primary: #00ff41;
+    --text-secondary: #0d9f0d;
+    --text-dim: #065f06;
+    --accent-blue: #00b4d8;
+    --accent-purple: #9b5de5;
+    --accent-orange: #f4a261;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--matrix-bg);
+    color: var(--text-primary);
+    font-family: 'Share Tech Mono', monospace;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  #matrix-rain {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    opacity: 0.1;
+  }
+
+  .scanlines {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 2px,
+      rgba(0, 0, 0, 0.12) 2px, rgba(0, 0, 0, 0.12) 4px
+    );
+  }
+
+  .container {
+    position: relative;
+    z-index: 2;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+
+  /* Hero */
+  .hero {
+    text-align: center;
+    padding: 60px 0 40px;
+  }
+
+  .hero::before {
+    content: '> SYSTEM ACCESS GRANTED_';
+    display: block;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 4px;
+    margin-bottom: 24px;
+    animation: flicker 3s infinite;
+  }
+
+  .avatar-frame {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    border: 2px solid var(--matrix-green);
+    box-shadow: var(--matrix-glow), inset 0 0 20px rgba(0, 255, 65, 0.1);
+    margin: 0 auto 28px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .avatar-frame .initials {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Orbitron', monospace;
+    font-size: 42px; font-weight: 900;
+    color: var(--matrix-green);
+    text-shadow: 0 0 20px rgba(0, 255, 65, 0.6), 0 0 40px rgba(0, 255, 65, 0.2);
+    background: radial-gradient(circle at 30% 30%, rgba(0, 255, 65, 0.08), transparent 70%);
+    letter-spacing: 4px;
+  }
+
+  .avatar-frame::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(0,255,65,0.1), transparent);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 900;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px rgba(0, 255, 65, 0.5), 0 0 60px rgba(0, 255, 65, 0.2);
+    margin-bottom: 12px;
+  }
+
+  .subtitle { font-size: 14px; color: var(--text-secondary); letter-spacing: 3px; margin-bottom: 8px; }
+  .location { font-size: 12px; color: var(--text-dim); letter-spacing: 2px; }
+  .location::before { content: '📍 '; }
+
+  .bio-terminal {
+    max-width: 700px;
+    margin: 30px auto 0;
+    padding: 20px 24px;
+    background: rgba(0, 255, 65, 0.03);
+    border: 1px solid var(--matrix-border);
+    border-radius: 4px;
+    text-align: left;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text-secondary);
+  }
+
+  .bio-terminal .prompt { color: var(--matrix-green); }
+  .bio-terminal .comment { color: var(--text-dim); font-style: italic; }
+  .bio-terminal .hl { color: var(--matrix-bright); }
+
+  /* Section titles */
+  .section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 18px; font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin: 60px 0 30px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--matrix-border);
+    text-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .section-title::before { content: '//'; color: var(--text-dim); font-size: 14px; }
+
+  /* Stats */
+  .stats-bar {
+    display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;
+    margin: 50px 0 20px; padding: 24px;
+    border: 1px solid var(--matrix-border);
+    border-radius: 4px; background: var(--matrix-card);
+  }
+
+  .stat-item { text-align: center; }
+
+  .stat-value {
+    font-family: 'Orbitron', monospace;
+    font-size: 28px; font-weight: 900;
+    color: var(--matrix-bright);
+    text-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 10px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--text-dim); margin-top: 4px;
+  }
+
+  /* Skills Grid */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+
+  .skill-category {
+    background: var(--matrix-card);
+    border: 1px solid var(--matrix-border);
+    border-radius: 4px; padding: 20px;
+    transition: all 0.3s ease;
+  }
+
+  .skill-category:hover {
+    border-color: var(--matrix-green);
+    box-shadow: var(--matrix-glow);
+    transform: translateY(-2px);
+  }
+
+  .skill-category h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 11px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--matrix-bright);
+    margin-bottom: 14px; padding-bottom: 8px;
+    border-bottom: 1px solid rgba(0, 255, 65, 0.1);
+  }
+
+  .skill-tag {
+    display: inline-block; font-size: 12px;
+    color: var(--text-secondary); padding: 3px 0; margin: 2px 0; line-height: 1.6;
+  }
+
+  .skill-tag::before { content: '> '; color: var(--text-dim); }
+
+  /* Tabs */
+  .project-tabs { display: flex; gap: 4px; margin-bottom: 24px; flex-wrap: wrap; }
+
+  .tab-btn {
+    background: var(--matrix-card);
+    border: 1px solid var(--matrix-border);
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    color: var(--text-dim);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px; letter-spacing: 2px;
+    padding: 10px 20px; cursor: pointer;
+    transition: all 0.3s; text-transform: uppercase;
+  }
+
+  .tab-btn:hover { color: var(--text-secondary); }
+
+  .tab-btn.active {
+    color: var(--matrix-green);
+    background: rgba(0, 255, 65, 0.08);
+    border-color: var(--matrix-green);
+    text-shadow: 0 0 8px rgba(0, 255, 65, 0.3);
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: grid; }
+
+  /* Projects */
+  .projects-grid {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  .project-card {
+    background: var(--matrix-card);
+    border: 1px solid var(--matrix-border);
+    border-radius: 4px; padding: 24px;
+    transition: all 0.3s ease;
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+
+  .project-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--matrix-green), transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+
+  .project-card:hover::before { opacity: 1; }
+
+  .project-card:hover {
+    border-color: var(--matrix-green);
+    box-shadow: var(--matrix-glow);
+    transform: translateY(-3px);
+  }
+
+  .project-header {
+    display: flex; align-items: flex-start;
+    justify-content: space-between; gap: 8px; margin-bottom: 10px;
+  }
+
+  .project-card h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 12px; letter-spacing: 1.5px;
+    color: var(--matrix-bright); line-height: 1.4;
+  }
+
+  .project-card p {
+    font-size: 13px; color: var(--text-secondary);
+    line-height: 1.7; margin-bottom: 14px; flex-grow: 1;
+  }
+
+  .project-meta {
+    display: flex; gap: 12px; font-size: 11px;
+    color: var(--text-dim); flex-wrap: wrap; align-items: center;
+  }
+
+  .project-meta span { display: flex; align-items: center; gap: 4px; }
+
+  .lang-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    display: inline-block; flex-shrink: 0;
+  }
+
+  .lang-csharp { background: #68217a; box-shadow: 0 0 6px #68217a; }
+  .lang-js { background: #f1e05a; box-shadow: 0 0 6px #f1e05a; }
+  .lang-sql { background: #e38c00; box-shadow: 0 0 6px #e38c00; }
+  .lang-cpp { background: #f34b7d; box-shadow: 0 0 6px #f34b7d; }
+  .lang-c { background: #555; box-shadow: 0 0 6px #555; }
+  .lang-docker { background: #2496ED; box-shadow: 0 0 6px #2496ED; }
+
+  .project-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--matrix-green); text-decoration: none;
+    font-size: 12px; letter-spacing: 1px;
+    transition: text-shadow 0.3s; margin-top: 10px;
+  }
+
+  .project-link:hover { text-shadow: 0 0 8px var(--matrix-green); }
+
+  .badge {
+    font-size: 9px; padding: 2px 8px; border-radius: 3px;
+    letter-spacing: 1px; text-transform: uppercase;
+    white-space: nowrap; flex-shrink: 0;
+  }
+
+  .badge-personal { background: rgba(155, 93, 229, 0.2); color: var(--accent-purple); border: 1px solid rgba(155, 93, 229, 0.4); }
+  .badge-work { background: rgba(0, 180, 216, 0.15); color: var(--accent-blue); border: 1px solid rgba(0, 180, 216, 0.3); }
+  .badge-template { background: rgba(244, 162, 97, 0.15); color: var(--accent-orange); border: 1px solid rgba(244, 162, 97, 0.3); }
+  .badge-hobby { background: rgba(0, 255, 65, 0.12); color: var(--matrix-green); border: 1px solid rgba(0, 255, 65, 0.3); }
+  .badge-wip { background: rgba(255, 200, 0, 0.12); color: #ffc800; border: 1px solid rgba(255, 200, 0, 0.3); }
+  .badge-fork { background: rgba(255, 255, 255, 0.05); color: var(--text-dim); border: 1px solid rgba(255, 255, 255, 0.1); }
+
+  .timeline-bar {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 8px; font-size: 10px; color: var(--text-dim);
+  }
+
+  .commit-hash { font-size: 10px; color: var(--text-dim); opacity: 0.7; }
+
+  /* Footer */
+  .footer {
+    text-align: center; margin-top: 60px; padding: 30px 0;
+    border-top: 1px solid var(--matrix-border);
+    font-size: 12px; color: var(--text-dim); letter-spacing: 2px;
+  }
+
+  .footer a { color: var(--matrix-green); text-decoration: none; transition: text-shadow 0.3s; }
+  .footer a:hover { text-shadow: 0 0 8px var(--matrix-green); }
+
+  .github-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 16px; padding: 10px 24px;
+    border: 1px solid var(--matrix-green); border-radius: 4px;
+    color: var(--matrix-green); text-decoration: none;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px; letter-spacing: 2px; transition: all 0.3s;
+  }
+
+  .github-btn:hover {
+    background: rgba(0, 255, 65, 0.1);
+    box-shadow: var(--matrix-glow);
+  }
+
+  @keyframes flicker {
+    0%, 100% { opacity: 1; }
+    92% { opacity: 1; } 93% { opacity: 0.2; }
+    94% { opacity: 1; } 96% { opacity: 0.4; } 97% { opacity: 1; }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero { animation: fadeInUp 0.8s ease-out; }
+  .skills-grid { animation: fadeInUp 1s ease-out 0.2s both; }
+
+  @media (max-width: 600px) {
+    .projects-grid { grid-template-columns: 1fr; }
+    .stats-bar { gap: 24px; }
+    .hero { padding: 30px 0 20px; }
+    .tab-btn { padding: 8px 12px; font-size: 10px; letter-spacing: 1px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="matrix-rain"></canvas>
+<div class="scanlines"></div>
+
+<div class="container">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="avatar-frame">
+      <div class="initials">DM</div>
+    </div>
+    <h1>Demis Martin</h1>
+    <div class="subtitle">Backend Developer · Arduino Lover · Code Builder</div>
+    <div class="location">Campinas, SP — Brasil</div>
+
+    <div class="bio-terminal">
+      <span class="prompt">demis@matrix:~$</span> cat about.txt<br><br>
+      Desenvolvedor com <span class="hl">+15 anos</span> de experiência em software.<br>
+      Especializado em <span class="hl">.NET, Web APIs, SQL Server</span> e integrações complexas.<br>
+      Atualmente Backend Dev na <span class="hl">CARMOB</span> — plataforma de gestão para<br>
+      lava-rápidos, estacionamentos e eventos automotivos.<br><br>
+      Nos tempos livres: <span class="hl">impressão 3D, aeromodelismo RC, paragliding</span><br>
+      e qualquer coisa que envolva hardware + software.<br><br>
+      <span class="comment"># "Arduino lover and code builder"</span>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-value">15+</span>
+      <span class="stat-label">Anos de XP</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">11</span>
+      <span class="stat-label">Repos Ativos</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">3</span>
+      <span class="stat-label">Empresas</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">∞</span>
+      <span class="stat-label">Curiosidade</span>
+    </div>
+  </div>
+
+  <!-- SKILLS -->
+  <h2 class="section-title">Skills Técnicas</h2>
+  <div class="skills-grid">
+    <div class="skill-category">
+      <h3>Backend</h3>
+      <span class="skill-tag">C# / .NET 8</span><br>
+      <span class="skill-tag">ASP.NET Web API</span><br>
+      <span class="skill-tag">ASP.NET WebForms</span><br>
+      <span class="skill-tag">WCF Services</span><br>
+      <span class="skill-tag">Windows Services</span><br>
+      <span class="skill-tag">Clean Architecture</span><br>
+      <span class="skill-tag">Dapper ORM</span>
+    </div>
+    <div class="skill-category">
+      <h3>Banco de Dados</h3>
+      <span class="skill-tag">SQL Server</span><br>
+      <span class="skill-tag">Stored Procedures</span><br>
+      <span class="skill-tag">DB Sync DEV/PRD</span><br>
+      <span class="skill-tag">Query Tuning</span>
+    </div>
+    <div class="skill-category">
+      <h3>DevOps & Cloud</h3>
+      <span class="skill-tag">AWS EC2 / Lambda</span><br>
+      <span class="skill-tag">Docker</span><br>
+      <span class="skill-tag">CI/CD Pipelines</span><br>
+      <span class="skill-tag">Prometheus</span><br>
+      <span class="skill-tag">Grafana</span><br>
+      <span class="skill-tag">Azure DevOps</span>
+    </div>
+    <div class="skill-category">
+      <h3>Integrações</h3>
+      <span class="skill-tag">Twilio WhatsApp</span><br>
+      <span class="skill-tag">Hikvision ISAPI</span><br>
+      <span class="skill-tag">ConectCar</span><br>
+      <span class="skill-tag">Payment APIs</span><br>
+      <span class="skill-tag">QR Code Systems</span>
+    </div>
+    <div class="skill-category">
+      <h3>Hardware & Maker</h3>
+      <span class="skill-tag">Arduino</span><br>
+      <span class="skill-tag">Marlin Firmware</span><br>
+      <span class="skill-tag">Klipper Firmware</span><br>
+      <span class="skill-tag">Impressão 3D / FDM</span><br>
+      <span class="skill-tag">CNC / Laser Cut</span>
+    </div>
+    <div class="skill-category">
+      <h3>CAD & Design</h3>
+      <span class="skill-tag">Fusion 360</span><br>
+      <span class="skill-tag">DXF / DWG</span><br>
+      <span class="skill-tag">Modelagem 3D</span><br>
+      <span class="skill-tag">Aeromodelismo RC</span><br>
+      <span class="skill-tag">Paragliding Design</span>
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <h2 class="section-title">Projetos & Repositórios</h2>
+
+  <div class="project-tabs">
+    <button class="tab-btn active" data-tab="personal">Pessoais & Hobby</button>
+    <button class="tab-btn" data-tab="professional">Profissional</button>
+    <button class="tab-btn" data-tab="opensource">Open Source</button>
+  </div>
+
+  <!-- PERSONAL TAB -->
+  <div id="tab-personal" class="tab-content active projects-grid">
+
+    <div class="project-card">
+      <div class="project-header">
+        <h3>🪂 SingleSkin</h3>
+        <span class="badge badge-personal">Pessoal</span>
+      </div>
+      <p>Software de design para paragliders — migração de Windows Forms para WPF moderno. Cálculos aerodinâmicos, curvas AR e modelagem de perfis de vela.</p>
+      <div class="project-meta">
+        <span><span class="lang-dot lang-csharp"></span> C# / WPF</span>
+        <span>🔀 Em migração</span>
+      </div>
+      <div class="timeline-bar">
+        <span>Último commit: Jul 2025</span>
+        <span class="commit-hash">967f4ea</span>
+      </div>
+      <a class="project-link" href="https://github.com/DemisMartin/SingleSkin" target="_blank">→ Ver no GitHub</a>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <h3>🅿️ Parking Marketplace</h3>
+        <span class="badge badge-wip">Em Dev</span>
+      </div>
+      <p>"Airbnb para estacionamentos" — busca por geolocalização, check-in/check-out via QR Code e sistema de pagamentos integrado. Conceito inspirado no VagaPark.</p>
+      <div class="project-meta">
+        <span><span class="lang-dot lang-csharp"></span> .NET Web API</span>
+        <span>🔒 Privado</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <h3>✈️ RC Aircraft — Midwest Hots II</h3>
+        <span class="badge badge-hobby">Hobby</span>
+      </div>
+      <p>Análise de plantas de aeromodelismo com geração de DXF para Fusion 360 — nervuras de asa, fuselagem e referências de montagem para CNC, laser e impressão 3D.</p>
+      <div class="project-meta">
+        <span>📐 Fusion 360 / DXF</span>
+        <span>🛩️ Aeromodelismo</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <h3>🖨️ Marlin Firmware — Agraber 30i</h3>
+        <span class="badge badge-hobby">Hobby</span>
+      </div>
+      <p>Firmware Marlin 2.8 customizado para Agraber 30i com MKS Robin Nano V2.0, TMC2209, BLTouch, duplo Z e sensorless homing X/Y.</p>
+      <div class="project-meta">
+        <span><span class="lang-dot lang-cpp"></span> C++</span>
+        <span>⭐ 1</span>
+      </div>
+      <a class="project-link" href="https://github.com/DemisMartin/MKS-Robin-Nano-V2-Marlin-Firmware-2.8-para-agraber-30i" target="_blank">→ Ver no GitHub</a>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <h3>🏗️ SimpleAPI.Template</h3>
+        <span class="badge badge-template">Template</span>
+      </div>
+      <p>Template .NET 8 Web API com Clean Architecture e Dapper — estrutura simples e escalável para kickstart de novos projetos.</p>
+      <div class="project-meta">
+        <span><span class="lang-dot lang-csharp"></span> C# / .NET 8</span>
+        <span><span class="lang-dot lang-docker"></span> Docker</span>
+      </div>
+      <div class="timeline-bar">
+        <span>Criado: Jun 2025</span>
+        <span class="commit-hash">30b124c</span>
+      </div>
+      <a class="project-link" href="https://github.com/DemisMartin/SimpleAPI.Template" target="_blank">→ Ver no GitHub</a>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <h3>🔄 ArabicToRoman</h3>
+        <span class="badge badge-personal">Pessoal</span>
+      </div>
+      <p>Conversor de números arábicos para algarismos romanos em C#. Exercício de lógica e boas práticas.</p>
+      <div class="project-meta">
+        <span><span class="lang-dot lang-csharp"></span> C#</span>
+      </div>
+      <a class="project-link" href="https://github.com/DemisMartin/ArabicToRoman" target="_blank">→ Ver no GitHub</a>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <h3>📦 Fusebox2 — CoreXY Printer</h3>
+        <span class="badge badge-fork">Fork</span>
+      </div>
+      <p>Fork do projeto de impressora 3D CoreXY para estudo de design mecânico e customização.</p>
+      <div class="project-meta">
+        <span><span class="lang-dot lang-c"></span> C</span>
+      </div>
+      <a class="project-link" href="https://github.com/DemisMartin/fusebox2" target="_blank">→ Ver no GitHub</a>
+    </div>
+
+  </div>
+
+  <!-- PROFESSIONAL TAB -->
+  <div id="tab-professional" class="tab-content projects-grid">
+
+    <div class="project-card">
+      <div class="project-header">
+        <h3>🔧 CarMobAPI</h3>
+        <span class="badge badge-work">CARMOB</span>
+      </div>
+      <p>API principal da plataforma CarMob — gestão completa para lava-rápidos, estacionamentos e eventos automotivos no mercado brasileiro.</p>
+      <div class="project-meta">
+        <span><span class="lang-dot lang-csharp"></span> C# / .NET</span>
+        <span><span class="lang-dot lang-js"></span> JS/TS</span>
+      </div>
+      <div class="timeline-bar"><span>Ativo desde 2025+</span></div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <h3>💰 CarMobApiInterna</h3>
+        <span class="badge badge-work">CARMOB</span>
+      </div>
+      <p>API interna para gerenciamento de pagamentos e analytics. Controle financeiro e métricas da plataforma.</p>
+      <div class="project-meta">
+        <span><span class="lang-dot lang-csharp"></span> C# / .NET</span>
+        <span><span class="lang-dot lang-docker"></span> Docker</span>
+      </div>
+      <div class="timeline-bar"><span>Último commit: Jan 2026</span></div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <h3>🌐 CarMobWeb</h3>
+        <span class="badge badge-work">CARMOB</span>
+      </div>
+      <p>Aplicação web principal com integração ConectCar, WCF Services e Windows Services. Sistema legado em constante evolução.</p>
+      <div class="project-meta">
+        <span><span class="lang-dot lang-csharp"></span> ASP.NET WebForms</span>
+        <span>WCF</span>
+      </div>
+      <div class="timeline-bar">
+        <span>Último commit: Fev 2026</span>
+        <span class="commit-hash">FSD-761</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <h3>🔍 CarMobAuditoria</h3>
+        <span class="badge badge-work">CARMOB</span>
+      </div>
+      <p>Sistema de auditoria e validação. Rastreabilidade e compliance para operações de estacionamento e serviços.</p>
+      <div class="project-meta">
+        <span><span class="lang-dot lang-csharp"></span> C# / .NET</span>
+        <span><span class="lang-dot lang-js"></span> JS/TS</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <h3>⏰ CarmobAgendadorServicos</h3>
+        <span class="badge badge-work">CARMOB</span>
+      </div>
+      <p>Windows Service para execução de tarefas agendadas. Automação de processos backend e manutenção de dados.</p>
+      <div class="project-meta">
+        <span><span class="lang-dot lang-csharp"></span> C# / .NET</span>
+        <span>Windows Service</span>
+      </div>
+      <div class="timeline-bar"><span>Último commit: Jan 2026</span></div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <h3>🏥 CarMobPortais</h3>
+        <span class="badge badge-work">CARMOB</span>
+      </div>
+      <p>Portais web para operadores — QR Code, selos e gestão de acessos. ASP.NET WebForms + Windows Services.</p>
+      <div class="project-meta">
+        <span><span class="lang-dot lang-csharp"></span> ASP.NET WebForms</span>
+      </div>
+      <div class="timeline-bar">
+        <span>Último commit: Jan 2026</span>
+        <span class="commit-hash">FSD-753</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <h3>💊 Epharma.App</h3>
+        <span class="badge badge-work">EPHARMA</span>
+      </div>
+      <p>Backend para o setor farmacêutico — autenticação, sync de perfis e gestão de tokens. CI/CD via Azure DevOps.</p>
+      <div class="project-meta">
+        <span><span class="lang-dot lang-csharp"></span> C# / .NET</span>
+        <span><span class="lang-dot lang-sql"></span> SQL</span>
+        <span><span class="lang-dot lang-js"></span> JS/TS</span>
+      </div>
+      <div class="timeline-bar"><span>Último commit: Out 2025</span></div>
+    </div>
+
+  </div>
+
+  <!-- OPEN SOURCE TAB -->
+  <div id="tab-opensource" class="tab-content projects-grid">
+
+    <div class="project-card">
+      <div class="project-header">
+        <h3>🖨️ Marlin Firmware — Agraber 30i</h3>
+        <span class="badge badge-hobby">Original</span>
+      </div>
+      <p>Firmware Marlin 2.8 customizado para Agraber 30i. Repositório mais popular com documentação completa de setup e configuração.</p>
+      <div class="project-meta">
+        <span><span class="lang-dot lang-cpp"></span> C++</span>
+        <span>⭐ 1</span>
+      </div>
+      <a class="project-link" href="https://github.com/DemisMartin/MKS-Robin-Nano-V2-Marlin-Firmware-2.8-para-agraber-30i" target="_blank">→ Ver no GitHub</a>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <h3>🏗️ SimpleAPI.Template</h3>
+        <span class="badge badge-template">Template</span>
+      </div>
+      <p>Template .NET 8 Web API — Clean Architecture + Dapper. Pronto para uso como base de novos projetos.</p>
+      <div class="project-meta">
+        <span><span class="lang-dot lang-csharp"></span> C# / .NET 8</span>
+        <span><span class="lang-dot lang-docker"></span> Docker</span>
+      </div>
+      <a class="project-link" href="https://github.com/DemisMartin/SimpleAPI.Template" target="_blank">→ Ver no GitHub</a>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <h3>🪂 SingleSkin</h3>
+        <span class="badge badge-personal">Pessoal</span>
+      </div>
+      <p>Software de design para paragliders — migração WinForms → WPF. Cálculos aerodinâmicos e modelagem de perfis.</p>
+      <div class="project-meta">
+        <span><span class="lang-dot lang-csharp"></span> C# / WPF</span>
+      </div>
+      <a class="project-link" href="https://github.com/DemisMartin/SingleSkin" target="_blank">→ Ver no GitHub</a>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <h3>🛒 BlazorShop</h3>
+        <span class="badge badge-fork">Fork</span>
+      </div>
+      <p>E-commerce com ASP.NET Core e Blazor WebAssembly. Fork para estudo de arquiteturas modernas.</p>
+      <div class="project-meta">
+        <span><span class="lang-dot lang-csharp"></span> C# / Blazor</span>
+      </div>
+      <a class="project-link" href="https://github.com/DemisMartin/BlazorShop" target="_blank">→ Ver no GitHub</a>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div>[ DEMIS MARTIN — PORTFÓLIO 2025 ]</div>
+    <a class="github-btn" href="https://github.com/DemisMartin" target="_blank">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+      github.com/DemisMartin
+    </a>
+  </footer>
+
+</div>
+
+<script>
+// Matrix Rain
+const canvas = document.getElementById('matrix-rain');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const chars = 'アカサタナハマヤラワガザダバパ0123456789ABCDEF<>{}[]=/\\';
+const charArr = chars.split('');
+const fontSize = 14;
+let columns = Math.floor(canvas.width / fontSize);
+let drops = Array(columns).fill(1);
+
+function draw() {
+  ctx.fillStyle = 'rgba(10, 10, 10, 0.06)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#00ff41';
+  ctx.font = fontSize + 'px monospace';
+
+  for (let i = 0; i < drops.length; i++) {
+    const text = charArr[Math.floor(Math.random() * charArr.length)];
+    ctx.globalAlpha = Math.random() * 0.5 + 0.2;
+    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+    drops[i]++;
+  }
+  ctx.globalAlpha = 1;
+}
+
+setInterval(draw, 50);
+
+window.addEventListener('resize', () => {
+  resize();
+  columns = Math.floor(canvas.width / fontSize);
+  drops = Array(columns).fill(1);
+});
+
+// Tabs
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    btn.classList.add('active');
+  });
+});
+</script>
+
+</body>
+</html>
